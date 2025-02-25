@@ -1,0 +1,63 @@
+{
+    "authors": [
+        "Richard (Rikki) Andrew Cattermole"
+    ],
+    "copyright": "Copyright © 2025-2025, Richard Cattermole",
+    "description": "Build manager designed for shared libraries",
+    "license": "Artistic-2.0",
+    "name": "sidero_sideroit",
+    "dependencies": {
+        "sidero_sideroit:library": "*",
+        "sidero_base": "*",
+        "sidero_eventloop": "*",
+        "sidero_fileformats": "*"
+    },
+    "targetType": "executable",
+    "dflags-windows-ldc": [
+        "-dllimport=all"
+    ],
+    "dflags-ldc": [
+        "--linkonce-templates",
+        "--link-internally"
+    ],
+    "buildOptions": [
+        "betterC"
+    ],
+    "subPackages": [
+        {
+            "name": "library",
+            "sourcePaths": [
+                "library"
+            ],
+            "importPaths": [
+                "library"
+            ],
+            "buildOptions": [
+                "betterC"
+            ],
+            "configurations": [
+                {
+                    "name": "library",
+                    "targetType": "dynamicLibrary",
+                    "dflags-windows-ldc": [
+                        "--fvisibility=public",
+                        "-dllimport=all"
+                    ],
+                    "dflags-ldc": [
+                        "--linkonce-templates",
+                        "--link-internally"
+                    ],
+                    "buildOptions": [
+                        "betterC"
+                    ]
+                },
+                {
+                    "name": "unittest",
+                    "dflags-windows-ldc": [
+                        "-dllimport=all"
+                    ]
+                }
+            ]
+        }
+    ]
+}
