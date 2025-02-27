@@ -1,7 +1,12 @@
 module sidero.sideroit.database.utils;
+import sidero.sideroit.messages;
 import sidero.base.path.file;
 import sidero.base.text;
 import sidero.base.system;
+
+struct SideroitConfig {
+
+}
 
 /**
     $SIDEROIT_HOME
@@ -11,22 +16,22 @@ import sidero.base.system;
     %LOCALAPPDATA%/sideroit/
 */
 void loadSideroitConfig(out SideroitConfig config) {
+    MessageBuilder messages = MessageBuilder("CONFIG LOADER");
     bool oneLoaded;
 
     {
         // TODO: assign defaults
     }
 
-    void seeRoot(FilePath root, bool useAppNameForConfigFile, bool autocreate = false, bool isUserDir=false) {
+    void seeRoot(FilePath root, bool useAppNameForConfigFile, bool autocreate = false, bool isUserDir = false) {
         import sidero.eventloop.filesystem.introspection;
         import sidero.eventloop.filesystem.operations;
         import sidero.eventloop.filesystem.utils;
         import sidero.fileformats.json5;
-        import sidero.base.text.processing.errors;
 
         if(!root.isAbsolute) {
             if(!root.makeAbsolute) {
-                // TODO: error
+                messages.warningln("Could not make root path absolute {:s}", root);
                 return;
             }
         }
@@ -35,8 +40,9 @@ void loadSideroitConfig(out SideroitConfig config) {
             if(!autocreate)
                 return;
 
-            if(!mkdir(root)) {
-                // TODO: error
+            auto error = mkdir(root);
+            if(!error) {
+                messages.warningln("Could not create the root directory {:s} due to {:s}", root, error);
                 return;
             }
         }
@@ -47,7 +53,7 @@ void loadSideroitConfig(out SideroitConfig config) {
             auto cliargs = commandLineArguments;
 
             if(cliargs.length == 0) {
-                // TODO: error
+                messages.fatalln("Global state for global arguments in not valid");
                 return;
             }
 
@@ -71,28 +77,32 @@ void loadSideroitConfig(out SideroitConfig config) {
         if(!isFile(settingsFile))
             return;
 
-        if (isUserDir) {
+        if(isUserDir) {
             // TODO: assign root directory as user config dir
         }
 
         {
-            ErrorSinkRef_Console errorSink = ErrorSinkRef_Console.make; // FIXME: move this!
+            ErrorSinkRef_StringBuilder errorSink = ErrorSinkRef_StringBuilder.make;
 
             auto rootJson = readJSON5(settingsFile, cast(ErrorSinkRef)errorSink);
             rootJson.blockUntilCompleteOrHaveValue;
 
-            if(errorSink.haveError) {
-                // TODO: error
+            if(messages.haveError) {
+                messages.error("", errorSink.builder);
                 return;
             }
 
             auto rootObj = rootJson.result;
             if(!rootObj) {
-                // TODO: error
+                // empty configuration, this is ok.
+
+                messages.warningln("Corrupt user configuration file for Sideroit at ", settingsFile);
+                messages.warning("", errorSink.builder);
                 return;
             }
 
             // TODO: evaluate tree
+            oneLoaded = true;
         }
     }
 
@@ -151,10 +161,6 @@ void loadSideroitConfig(out SideroitConfig config) {
     }
 
     if(!oneLoaded) {
-        // TODO: error
+        messages.errorln("Could not load any configurations for Sideroit");
     }
-}
-
-struct SideroitConfig {
-
 }
