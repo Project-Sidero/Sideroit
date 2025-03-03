@@ -1,12 +1,12 @@
 extern(C) int main()
 {
-    import sidero.sideroit.database.utils;
+    import sidero.sideroit.database.peruserconfig;
     import sidero.eventloop.control;
 
     cast(void)startWorkerThreads;
     cast(void)startUpNetworking;
 
-    SideroitConfig sideroitConfig;
-    loadSideroitConfig(sideroitConfig);
+    SideroitPerUserConfig sideroitPerUserConfig;
+    loadSideroitPerUserConfig(sideroitPerUserConfig);
     return 0;
 }

@@ -1,11 +1,11 @@
-module sidero.sideroit.database.utils;
+module sidero.sideroit.database.peruserconfig;
 import sidero.sideroit.messages;
 import sidero.base.path.file;
 import sidero.base.text;
 import sidero.base.system;
 
-struct SideroitConfig {
-
+struct SideroitPerUserConfig {
+    FilePath perUserDir;
 }
 
 /**
@@ -15,7 +15,7 @@ struct SideroitConfig {
     ~/.sideroit/
     %LOCALAPPDATA%/sideroit/
 */
-void loadSideroitConfig(out SideroitConfig config) {
+void loadSideroitPerUserConfig(out SideroitPerUserConfig config) {
     MessageBuilder messages = MessageBuilder("CONFIG LOADER");
     bool oneLoaded;
 
@@ -77,9 +77,8 @@ void loadSideroitConfig(out SideroitConfig config) {
         if(!isFile(settingsFile))
             return;
 
-        if(isUserDir) {
-            // TODO: assign root directory as user config dir
-        }
+        if(isUserDir)
+            config.perUserDir = root;
 
         {
             ErrorSinkRef_StringBuilder errorSink = ErrorSinkRef_StringBuilder.make;
