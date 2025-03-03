@@ -24,13 +24,13 @@ export @safe nothrow @nogc:
 
     ~this() {
         while(unitCleanupLL !is null) {
-            Unit* next = unitCleanupLL;
+            Unit* next = unitCleanupLL.unitCleanupLL;
             allocator.dispose(unitCleanupLL);
             unitCleanupLL = next;
         }
 
         while(artifactCleanupLL !is null) {
-            Artifact* next = artifactCleanupLL;
+            Artifact* next = artifactCleanupLL.artifactCleanupLL;
             allocator.dispose(artifactCleanupLL);
             artifactCleanupLL = next;
         }

@@ -4,7 +4,9 @@ import sidero.base.path.file;
 import sidero.base.text;
 import sidero.base.system;
 
-struct SideroitPerUserConfig {
+export @safe nothrow @nogc:
+
+struct PerUserConfig {
     FilePath perUserDir;
 }
 
@@ -15,7 +17,7 @@ struct SideroitPerUserConfig {
     ~/.sideroit/
     %LOCALAPPDATA%/sideroit/
 */
-void loadSideroitPerUserConfig(out SideroitPerUserConfig config) {
+void loadPerUserConfig(out PerUserConfig config) {
     MessageBuilder messages = MessageBuilder("CONFIG LOADER");
     bool oneLoaded;
 
@@ -23,7 +25,7 @@ void loadSideroitPerUserConfig(out SideroitPerUserConfig config) {
         // TODO: assign defaults
     }
 
-    void seeRoot(FilePath root, bool useAppNameForConfigFile, bool autocreate = false, bool isUserDir = false) {
+    void seeRoot(FilePath root, bool useAppNameForConfigFile, bool autocreate = false, bool isUserDir = false) @trusted {
         import sidero.eventloop.filesystem.introspection;
         import sidero.eventloop.filesystem.operations;
         import sidero.eventloop.filesystem.utils;
@@ -86,7 +88,7 @@ void loadSideroitPerUserConfig(out SideroitPerUserConfig config) {
             auto rootJson = readJSON5(settingsFile, cast(ErrorSinkRef)errorSink);
             rootJson.blockUntilCompleteOrHaveValue;
 
-            if(messages.haveError) {
+            if(errorSink.haveError) {
                 messages.error("", errorSink.builder);
                 return;
             }
