@@ -35,16 +35,15 @@
             "buildOptions": [
                 "betterC"
             ],
+            "dependencies": {
+                "sidero_base": "*",
+                "sidero_eventloop": "*",
+                "sidero_fileformats": "*"
+            },
             "configurations": [
                 {
                     "name": "library",
                     "targetType": "dynamicLibrary",
-
-                    "dependencies": {
-                        "sidero_base": "*",
-                        "sidero_eventloop": "*",
-                        "sidero_fileformats": "*"
-                    },
 
                     "dflags-windows-ldc": [
                         "--fvisibility=public",

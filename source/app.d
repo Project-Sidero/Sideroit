@@ -8,5 +8,14 @@ extern(C) int main()
 
     SideroitPerUserConfig sideroitPerUserConfig;
     loadSideroitPerUserConfig(sideroitPerUserConfig);
+
+    import sidero.sideroit.packages;
+    Packages packages;
+
+    Unit* unit = packages.newUnit();
+    Artifact* artifact = packages.newArtifact();
+    ArtifactOption* artifactOption = packages.newArtifactOption();
+    Aspect* aspect = packages.newAspect();
+
     return 0;
 }
