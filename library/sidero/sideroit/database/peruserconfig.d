@@ -73,6 +73,9 @@ void loadPerUserConfig(out PerUserConfig config) {
 
 // Nothing here so far!
 }})).blockUntilCompleteOrHaveValue;
+
+            if(isUserDir)
+                config.perUserDir = root;
             return;
         }
 

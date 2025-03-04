@@ -49,15 +49,24 @@ void loadLocalPackages(ref PerUserConfig perUserConfig, ref LocalPackages localP
     if(localPackages.loaded)
         return;
 
+    scope(exit)
+        localPackages.loaded = true;
+
     MessageBuilder messages = MessageBuilder("LOCAL PACKAGES LOADER");
+
+    if(perUserConfig.perUserDir.isNull) {
+        messages.warningln("No user directory to look for local packages database in");
+        return;
+    }
+
     FilePath localPackagesFile = perUserConfig.perUserDir.dup;
     cast(void)(localPackagesFile ~= "local_packages.json5");
 
-    if (!exists(localPackagesFile)) {
-        write(localPackagesFile, String_UTF8(q{[
+    if(!exists(localPackagesFile)) {
+        write(localPackagesFile, String_UTF8(q{{
 // Sideroit build manager local packages database
 // https://github.com/Project-Sidero/sideroit
-]})).blockUntilCompleteOrHaveValue;
+}})).blockUntilCompleteOrHaveValue;
 
         localPackages.loaded = true;
         return;
@@ -83,5 +92,13 @@ void loadLocalPackages(ref PerUserConfig perUserConfig, ref LocalPackages localP
     }
 
     // TODO: evaluate tree
-    localPackages.loaded = true;
+    // name: {
+    //      latest: "path",
+    //      versions: [
+    //          {
+    //              path: "path",
+    //              version: "0.0.0"
+    //          }
+    //      ]
+    // }
 }
